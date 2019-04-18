@@ -328,6 +328,8 @@ export default class Pager<T: Route> extends React.Component<Props<T>> {
         // When the animation finishes, stop the clock
         stopClock(this._clock),
         call([this._index], ([value]) => {
+          this._currentIndexValue = value;
+
           // If the index changed, and previous animation has finished, update state
           this.props.onIndexChange(value);
 
@@ -356,9 +358,22 @@ export default class Pager<T: Route> extends React.Component<Props<T>> {
   ]);
 
   _translateX = block([
-    call([this._index], ([value]) => {
-      this._currentIndexValue = value;
-    }),
+    onChange(
+      this._nextIndex,
+      cond(neq(this._nextIndex, UNSET), [
+        // Stop any running animations
+        cond(clockRunning(this._clock), stopClock(this._clock)),
+        // Update the index to trigger the transition
+        set(this._index, this._nextIndex),
+        set(this._nextIndex, UNSET),
+      ])
+    ),
+    onChange(
+      this.index,
+      call([this._index], ([value]) => {
+        this._currentIndexValue = value;
+      })
+    ),
     // Conditionally listen for changes in the position value
     // The position value can changes a lot in short time
     // So we only add a listener when necessary to avoid extra overhead
@@ -387,16 +402,6 @@ export default class Pager<T: Route> extends React.Component<Props<T>> {
           onSwipeEnd && onSwipeEnd();
         }
       })
-    ),
-    onChange(
-      this._nextIndex,
-      cond(neq(this._nextIndex, UNSET), [
-        // Stop any running animations
-        cond(clockRunning(this._clock), stopClock(this._clock)),
-        // Update the index to trigger the transition
-        set(this._index, this._nextIndex),
-        set(this._nextIndex, UNSET),
-      ])
     ),
     cond(
       eq(this._gestureState, State.ACTIVE),
