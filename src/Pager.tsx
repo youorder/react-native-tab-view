@@ -123,8 +123,19 @@ export default class Pager<T extends Route> extends React.Component<Props<T>> {
       (typeof this.pendingIndexValue === 'number' &&
         index !== this.pendingIndexValue)
     ) {
-      // Index in user's state is different from the index being tracked
-      this.jumpToIndex(index);
+      const prevRouteKey =
+        prevProps.navigationState.routes[prevProps.navigationState.index].key;
+      const nextRouteKey = routes[index].key;
+
+      if (prevRouteKey !== nextRouteKey) {
+        // Index in user's state is different from the index being tracked
+        this.jumpToIndex(index);
+      } else {
+        const progress = multiply(index, this.layoutWidth, DIRECTION_RIGHT);
+
+        this.progress.setValue(progress);
+        this.index.setValue(index);
+      }
     }
 
     // Reset the pending index
@@ -202,7 +213,7 @@ export default class Pager<T extends Route> extends React.Component<Props<T>> {
   private velocityX = new Value(0);
   private gestureX = new Value(0);
   private gestureState = new Value(State.UNDETERMINED);
-  private offsetX = new Value(0);
+  private offsetX = new Value<number>(0);
 
   // Current progress of the page (translateX value)
   private progress = new Value(
