@@ -93,5 +93,9 @@
       "module",
       "typescript"
     ]
+  },
+  "dependencies": {
+    "@types/react-is": "^16.7.1",
+    "react-is": "^16.12.0"
   }
 }

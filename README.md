@@ -78,7 +78,7 @@ We're done! Now you can build and run the app on your device/simulator.
 ```js
 import * as React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, useTabs } from 'react-native-tab-view';
 
 const FirstRoute = () => (
   <View style={[styles.scene, { backgroundColor: '#ff4081' }]} />
@@ -91,25 +91,18 @@ const SecondRoute = () => (
 const initialLayout = { width: Dimensions.get('window').width };
 
 export default function TabViewExample() {
-  const [index, setIndex] = React.useState(index);
-  const [routes] = React.useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' },
-  ]);
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
+  const config = useTabs({
+    first: {
+      component: FirstRoute,
+      title: 'First',
+    },
+    second: {
+      component: SecondRoute,
+      title: 'Second',
+    },
   });
 
-  return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={initialLayout}
-    />
-  );
+  return <TabView {...config} initialLayout={initialLayout} />;
 }
 
 const styles = StyleSheet.create({
@@ -284,7 +277,6 @@ If this is not specified, the default tab bar is rendered. You pass this props t
 ##### `renderPager`
 
 Callback which returns a custom React Element to use as pager:
-
 
 ##### `tabBarPosition`
 
