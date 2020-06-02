@@ -491,10 +491,22 @@ export default class Pager<T extends Route> extends React.Component<
           ),
         ],
         // Otherwise use a timing animation for faster switching
-        timing(
-          this.clock,
-          { ...state, frameTime },
-          { ...TIMING_CONFIG, ...this.timingConfig, toValue }
+        cond(
+          lessThan(this.timingConfig.duration, 17),
+          [
+            set(state.position, toValue),
+            set(state.finished, TRUE),
+            Animated.debug('position', this.position),
+            Animated.debug(
+              'estimated',
+              divide(multiply(this.progress, -1), this.layoutWidth)
+            ),
+          ],
+          timing(
+            this.clock,
+            { ...state, frameTime },
+            { ...TIMING_CONFIG, ...this.timingConfig, toValue }
+          )
         )
       ),
       cond(not(clockRunning(this.clock)), startClock(this.clock)),

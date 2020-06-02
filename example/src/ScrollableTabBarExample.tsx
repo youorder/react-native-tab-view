@@ -68,6 +68,7 @@ export default class ScrollableTabBarExample extends React.Component<
         renderScene={this.renderScene}
         renderTabBar={this.renderTabBar}
         onIndexChange={this.handleIndexChange}
+        timingConfig={{ duration: 16 }}
       />
     );
   }
