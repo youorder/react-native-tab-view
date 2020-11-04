@@ -105,16 +105,8 @@ export default class TabBarItem<T extends Route> extends React.Component<
     const tabIndex = navigationState.routes.indexOf(route);
     const isFocused = navigationState.index === tabIndex;
 
-    const activeOpacity = this.getActiveOpacity(
-      position,
-      navigationState.routes,
-      tabIndex
-    );
-    const inactiveOpacity = this.getInactiveOpacity(
-      position,
-      navigationState.routes,
-      tabIndex
-    );
+    const activeOpacity = 1
+    const inactiveOpacity = 0
 
     let icon: React.ReactNode | null = null;
     let label: React.ReactNode | null = null;
